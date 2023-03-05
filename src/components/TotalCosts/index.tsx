@@ -1,34 +1,18 @@
 import { NumericFormat } from "react-number-format"
-import MoneyFormat from "../MoneyFormat"
+import * as S from "./styles"
 
-type Nullable<T> = T | null | undefined
+export type Nullable<T> = T | null | undefined
 
-interface TotalCostsProps {
-  price: Nullable<number>
-  autonomy: Nullable<number>
-  distance: Nullable<number>
+interface TotalCostsProps extends React.HTMLAttributes<HTMLDivElement> {
+  totalCosts: Nullable<number>
 }
 
-interface CostsParams {
-  price: number
-  autonomy: number
-  distance: number
-}
-
-function TotalCosts({ price, autonomy, distance }: TotalCostsProps) {
-
-  function calculateCosts({ price, autonomy, distance }: CostsParams) {
-    console.log(distance, autonomy, price)
-    console.log((distance / autonomy) * price)
-
-    return (distance / autonomy) * price
-  }
-
-  if (!price || !autonomy || !distance) 
+function TotalCosts({ totalCosts, className }: TotalCostsProps) {
+  if (!totalCosts) 
     return <></>
 
   return (
-    <div>
+    <S.Container className={className}>
       <span>Total de custos: </span>
       <NumericFormat 
         thousandSeparator="."
@@ -37,9 +21,9 @@ function TotalCosts({ price, autonomy, distance }: TotalCostsProps) {
         decimalScale={2}
         displayType="text"
         fixedDecimalScale
-        value={calculateCosts({ price, autonomy, distance })} 
+        value={totalCosts} 
       />
-    </div>
+    </S.Container>
   )
 }
 

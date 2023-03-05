@@ -1,8 +1,8 @@
 // Create a complete form hook
 
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
-type InputType = "text" | "numeric" | "select" | "subform" | "numeric:list"
+type InputType = "text" | "numeric" | "select" | "numeric:list"
 
 interface InputPropsParams {
   name: string
@@ -31,13 +31,14 @@ export default function useForm({
   inputTypes = {},
   controlInputBlur = false
 }: UseFormSettings = {}) {
+  
   const [values, setValues] = useState(initialValues || {})
   const [touched, setTouched] = useState({})
 
   const listInputTypes: ListInputTypeEntries = Object
-      .entries(inputTypes)
-      .filter(([, inputType]) => inputType.includes(":list"))
-      .map(([name, inputType]) => [name, inputType.replace(":list", "") as InputType])
+    .entries(inputTypes)
+    .filter(([, inputType]) => inputType.includes(":list"))
+    .map(([name, inputType]) => [name, inputType.replace(":list", "") as InputType])
 
   function handleHTMLInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target
@@ -55,7 +56,7 @@ export default function useForm({
     } else {
       convertedValue = convertValue(value, inputTypes[name] || "text")
     }
-    
+
 
     setValues(values => ({ ...values, [name]: convertedValue }))
   }
@@ -81,7 +82,7 @@ export default function useForm({
     } else {
       convertedValue = convertValue(originalValue, inputTypes[name] || "text")
     }
-    
+
     return {
       name,
       type: "text",
@@ -102,10 +103,8 @@ export default function useForm({
 
   function parseAndCleanNumericValue(value: any) {
     const cleanValue = String(value || "").replaceAll(/[^0-9\.]+/gim, "")
-    return !cleanValue ? "" : Number(cleanValue)
+    return !cleanValue ? 0 : Number(cleanValue)
   }
-
-  console.log(values)
 
   return { getInputProps, handleInputChange, handleInputBlur, getInputValueByName, values }
 }

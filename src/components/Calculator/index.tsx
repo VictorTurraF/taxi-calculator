@@ -1,9 +1,8 @@
 import useForm from "../../hooks/useForm"
-import EarningsList from "../EarningsList/v2"
-import CalculatorInput from "../FormInput"
+import EarningsList from "../EarningsList"
+import CalculatorInput from "../Input"
 import MoneyInput, { createMoneyInputHandlerAdaptedToFormHook } from "../MoneyFormat"
-import TotalCosts from "../TotalCosts"
-import TotalEarnings from "../TotalEarnings"
+import TotalResults from "../TotalResults"
 import * as S from "./styles"
 
 function Calculator() {
@@ -12,14 +11,14 @@ function Calculator() {
     getInputProps,
     handleInputChange,
     getInputValueByName
-    
 
   } = useForm({
     initialValues: {
-      distance: null,
+      distance: 0,
       price: 5.07,
-      autonomy: null
+      autonomy: 0
     },
+
     inputTypes: {
       distance: "numeric",
       price: "numeric",
@@ -33,30 +32,68 @@ function Calculator() {
     initialValues: {
       "earning--1": 10.5
     },
+
     inputTypes: {
       "earning": "numeric:list"
     }
   })
 
+  function calculateTotalCosts() {
+    const distance = getInputValueByName("distance") as number
+    const price = getInputValueByName("price") as number
+    const autonomy = getInputValueByName("autonomy") as number
+
+    const totalCosts = (distance / autonomy) * price
+
+    return totalCosts
+  }
+
+  const totalCosts = calculateTotalCosts()
+
+
+  function sumEarnings() {
+    const earnings = earningsForm.values as Record<string, number>
+
+    return Object.values(earnings).reduce((acc, curr) => acc + curr, 0)
+  }
+
+  const totalEarnings = sumEarnings()
+
+  const totalResult = totalEarnings - totalCosts
 
   return (
     <S.Form>
-      <p>dados</p>
-      <MoneyInput placeholder="Preço do Combustível" name="price" value={getInputValueByName("price") as any} onChange={handleMoneyInputChange} />
-      <CalculatorInput placeholder="KM Rodados" {...getInputProps({ name: "distance" })} />
-      <CalculatorInput placeholder="Autonomia do Veículo (Km/L)" {...getInputProps({ name: "autonomy" })} />
-
-      <TotalCosts
-        price={getInputValueByName('price') as number}
-        autonomy={getInputValueByName('autonomy') as number}
-        distance={getInputValueByName('distance') as number}
-      />
-
-      <hr />
-      <p>ganhos</p>
-      <EarningsList name={"earning"} form={earningsForm} />
-
-      <TotalEarnings earnings={earningsForm.values as any} />
+      <S.Container>
+        <S.Title>Custos</S.Title>
+        <S.InputsColumn>
+          <MoneyInput
+            placeholder="Preço do Combustível"
+            name="price"
+            value={getInputValueByName("price") as any}
+            onChange={handleMoneyInputChange}
+          />
+          <CalculatorInput
+            placeholder="KM Rodados"
+            {...getInputProps({ name: "distance" })}
+          />
+          <CalculatorInput
+            placeholder="Autonomia do Veículo (Km/L)"
+            {...getInputProps({ name: "autonomy" })}
+          />
+        </S.InputsColumn>
+        <S.TotalCosts totalCosts={totalCosts} />
+      </S.Container>
+      <S.EarningsContainer>
+        <S.Title>Ganhos</S.Title>
+        <EarningsList name={"earning"} form={earningsForm} />
+        <S.TotalEarnings totalEarnings={totalEarnings} />
+      </S.EarningsContainer>
+      <S.TotalContainer>
+        <S.Title>Resultado</S.Title>
+        <S.TotalTotalCosts totalCosts={totalCosts} />
+        <S.TotalTotalEarnings totalEarnings={totalEarnings} />
+        <TotalResults totalResults={totalResult} />
+      </S.TotalContainer>
     </S.Form>
   )
 }

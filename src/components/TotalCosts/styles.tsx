@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const TotalEarningsRow = styled.div`
+export const Container = styled.div`
+  color: #e74c3c;
   font: 700 1.2rem Roboto;
-  color:#4caf50;
 `

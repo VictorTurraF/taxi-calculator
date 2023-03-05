@@ -1,15 +1,18 @@
-import React from 'react'
 import { NumericFormat } from 'react-number-format'
+import { Nullable } from '../TotalCosts'
+import * as S from './styles'
 
-interface TotalEarningsProps {
-  earnings: Record<string, number>
+interface TotalEarningsProps extends React.HTMLAttributes<HTMLDivElement> {
+  totalEarnings: Nullable<number>
 }
 
-function TotalEarnings({ earnings }: TotalEarningsProps) {
-  console.log(earnings)
+function TotalEarnings({ totalEarnings, className = "" }: TotalEarningsProps) {
+
+  if (!totalEarnings) return <></>
+
   return (
-    <div>
-      <span>Total de ganhos:</span>
+    <S.TotalEarningsRow className={className}>
+      <span>Total de ganhos: </span>
       <span>
         <NumericFormat
           thousandSeparator="."
@@ -18,10 +21,10 @@ function TotalEarnings({ earnings }: TotalEarningsProps) {
           decimalScale={2}
           displayType="text"
           fixedDecimalScale
-          value={Object.values(earnings).reduce((acc, earning) => acc + earning)}
+          value={totalEarnings}
         />
       </span>
-    </div>
+    </S.TotalEarningsRow>
   )
 }
 

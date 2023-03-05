@@ -1,6 +1,9 @@
-import { useState } from "react";
-import useForm from "../../../hooks/useForm"
-import MoneyFormat, { createMoneyInputHandlerAdaptedToFormHook } from "../../MoneyFormat";
+import { useEffect, useState } from "react";
+import useForm from "../../hooks/useForm"
+import Button from "../Button";
+import InputGroup from "../InputGroup";
+import MoneyFormat, { createMoneyInputHandlerAdaptedToFormHook } from "../MoneyFormat";
+import * as S from "./styles";
 
 interface EarningsListProps {
   name: string
@@ -12,6 +15,7 @@ function EarningsList({ form, name }: EarningsListProps) {
   const [, setSequence] = useState(2);
 
   const { handleInputChange, getInputValueByName } = form
+
   const handleMoneyInputChange = createMoneyInputHandlerAdaptedToFormHook(handleInputChange)
 
   function handleAddInputClick(event: React.MouseEvent<HTMLButtonElement>) {
@@ -26,14 +30,19 @@ function EarningsList({ form, name }: EarningsListProps) {
 
   function handleRemoveInputClick(event: React.MouseEvent<HTMLButtonElement>, input: string) {
     event.preventDefault()
+
+    handleInputChange({
+      name: input,
+      value: null
+    })
+
     setInputs(inputs => inputs.filter(i => i !== input))
   }
 
-
   return (
-    <div>
+    <S.EarningsList>
       {inputs.map(input => (
-        <div style={{ display: 'flex' }}>
+        <InputGroup style={{ display: 'flex' }}>
           <MoneyFormat
             placeholder="Ganho"
             value={getInputValueByName(input) as any}
@@ -41,15 +50,19 @@ function EarningsList({ form, name }: EarningsListProps) {
             onChange={handleMoneyInputChange}
           />
           {inputs.length > 1 && (
-            <button onClick={event => handleRemoveInputClick(event, input)}>
+            <Button
+              isOutlined
+              isDanger
+              onClick={event => handleRemoveInputClick(event, input)}
+            >
               Remover
-            </button>
+            </Button>
           )}
-        </div>
+        </InputGroup>
       ))}
 
-      <button onClick={handleAddInputClick}>Adicionar</button>
-    </div>
+      <Button onClick={handleAddInputClick}>Adicionar</Button>
+    </S.EarningsList>
   )
 }
 

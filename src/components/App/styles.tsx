@@ -10,7 +10,7 @@ export const Title = styled.h1`
   font-size: 2.25rem;
   font-weight: 600;
   text-align: center;
-  margin: 3rem 0 1.5rem;
+  margin: 3rem 0 2.5rem;
   color: #3a3a3a;
   font-family: 'Poppins', sans-serif;
 `
